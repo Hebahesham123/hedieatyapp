@@ -1,4 +1,5 @@
 Hedieaty 🎁
+==========
 Hedieaty is a gift list management app that helps users streamline the process of creating, managing, and sharing wish lists for special occasions. From birthdays to weddings, users can create unique gift lists, view friend’s lists, and pledge to buy specific gifts. This Flutter app aims to make gift-giving joyful and organized by allowing users to add, modify, and pledge gifts in real-time.
 
 Features
