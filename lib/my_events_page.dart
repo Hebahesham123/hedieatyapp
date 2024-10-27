@@ -2,12 +2,69 @@
 
 import 'package:flutter/material.dart';
 
-class MyEventsPage extends StatelessWidget {
-  final List<String> myEvents = [
+class MyEventsPage extends StatefulWidget {
+  @override
+  _MyEventsPageState createState() => _MyEventsPageState();
+}
+
+class _MyEventsPageState extends State<MyEventsPage> {
+  List<String> myEvents = [
     'My Birthday',
     'Graduation',
     // Add more events as needed
   ];
+
+  // Function to show a dialog for adding or editing an event
+  void _showEventDialog({String? initialEvent, int? index}) {
+    final TextEditingController eventController = TextEditingController(
+      text: initialEvent,
+    );
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(initialEvent == null ? 'Add New Event' : 'Edit Event'),
+        content: TextField(
+          controller: eventController,
+          decoration: InputDecoration(hintText: 'Event Name'),
+        ),
+        actions: [
+          if (initialEvent != null) // Show delete button only for editing
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  myEvents.removeAt(index!);
+                });
+                Navigator.pop(context);
+              },
+              child: Text('Delete', style: TextStyle(color: Colors.red)),
+            ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              final newEvent = eventController.text.trim();
+              if (newEvent.isNotEmpty) {
+                setState(() {
+                  if (index == null) {
+                    myEvents.add(newEvent); // Add new event
+                  } else {
+                    myEvents[index] = newEvent; // Update existing event
+                  }
+                });
+              }
+              Navigator.pop(context);
+            },
+            child: Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +84,15 @@ class MyEventsPage extends StatelessWidget {
             ),
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add, color: Colors.white),
+            tooltip: 'Add Event',
+            onPressed: () {
+              _showEventDialog(); // Open dialog to add new event
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -58,30 +124,19 @@ class MyEventsPage extends StatelessWidget {
                       icon: Icon(Icons.edit, color: Colors.blue),
                       tooltip: 'Edit Event',
                       onPressed: () {
-                        // Implement edit event functionality
-                      },
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.delete, color: Colors.red),
-                      tooltip: 'Delete Event',
-                      onPressed: () {
-                        // Implement delete event functionality
+                        _showEventDialog(initialEvent: event, index: index);
                       },
                     ),
                   ],
                 ),
+                onTap: () {
+                  _showEventDialog(
+                      initialEvent: event, index: index); // Edit on tap
+                },
               ),
             );
           },
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Implement add event functionality
-        },
-        backgroundColor: Color(0xFF8E24AA),
-        tooltip: 'Add Event',
-        child: Icon(Icons.add, color: Colors.white),
       ),
     );
   }

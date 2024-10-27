@@ -10,43 +10,58 @@ class _HomePageState extends State<HomePage> {
   final List<Map<String, dynamic>> friends = [
     {
       'name': 'Mohamed H',
-      'image': 'https://example.com/path/to/mohamed_image.jpg',
+      'image':
+          'https://mediaslide-europe.storage.googleapis.com/success/pictures/3344/12176/profile-1712055449-61620c38f337b5355ae94a26c62f3623.jpg',
       'upcomingEvents': 2,
+      'events': [
+        {
+          'name': 'Birthday Party',
+          'gifts': ['Laptop', 'Smartphone']
+        },
+        {
+          'name': 'New Year Celebration',
+          'gifts': ['Watch', 'Perfume']
+        },
+      ],
+    },
+    {
+      'name': 'Heba Hesham',
+      'image':
+          'https://media.licdn.com/dms/image/v2/D5610AQF2_PUAdRFeQg/image-shrink_800/image-shrink_800/0/1706878825602?e=2147483647&v=beta&t=wZjIlnP6x2oFdq--OdW76e0VizChOpLHx548X4RVC_c',
+      'upcomingEvents': 3,
+      'events': [
+        {
+          'name': 'Wedding Anniversary',
+          'gifts': ['Necklace', 'Rings']
+        },
+        {
+          'name': 'Graduation',
+          'gifts': ['Laptop', 'Books']
+        },
+        {
+          'name': 'Baby Shower',
+          'gifts': ['Baby Clothes', 'Toys']
+        },
+      ],
     },
     {
       'name': 'Sara W',
-      'image': 'https://example.com/path/to/sara_image.jpg',
-      'upcomingEvents': 0,
+      'image':
+          'https://www.face-agency.co.uk/sites/default/files/styles/teaser/public/2023-11/13_4.jpg?itok=KzYYPeZ6',
+      'upcomingEvents': 1,
+      'events': [
+        {
+          'name': 'Housewarming',
+          'gifts': ['Coffee Maker', 'Blender']
+        }
+      ],
     },
-    {
-      'name': 'Sara W',
-      'image': 'https://example.com/path/to/sara_image.jpg',
-      'upcomingEvents': 0,
-    },
-    {
-      'name': 'Sara W',
-      'image': 'https://example.com/path/to/sara_image.jpg',
-      'upcomingEvents': 0,
-    },
-    {
-      'name': 'Sara W',
-      'image': 'https://example.com/path/to/sara_image.jpg',
-      'upcomingEvents': 0,
-    },
-    {
-      'name': 'Sara W',
-      'image': 'https://example.com/path/to/sara_image.jpg',
-      'upcomingEvents': 0,
-    },
-
-    // Add more friends with their image URLs and event counts as needed
   ];
 
   String searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
-    // Filter friends based on search query
     final filteredFriends = friends.where((friend) {
       return friend['name'].toLowerCase().contains(searchQuery.toLowerCase());
     }).toList();
@@ -66,22 +81,18 @@ class _HomePageState extends State<HomePage> {
         title: Text(
           'Hedieaty',
           style: TextStyle(
-            fontFamily: 'Pacifico', // Ensure you have this font in your assets
+            fontFamily: 'Pacifico',
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: Colors.white, // Set text color to white
+            color: Colors.white,
           ),
         ),
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(
-              Icons.person_add,
-              color: Colors.white, // Set icon color to white
-            ),
+            icon: Icon(Icons.person_add, color: Colors.white),
             tooltip: 'Add Friend',
             onPressed: () {
-              // Implement add friend functionality
               _showAddFriendDialog(context);
             },
           ),
@@ -127,9 +138,7 @@ class _HomePageState extends State<HomePage> {
                     leading: CircleAvatar(
                       radius: 30,
                       backgroundImage: NetworkImage(friend['image']),
-                      onBackgroundImageError: (_, __) {
-                        // Handle error if image fails to load
-                      },
+                      onBackgroundImageError: (_, __) {},
                     ),
                     title: Text(
                       friend['name'],
@@ -163,8 +172,10 @@ class _HomePageState extends State<HomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              FriendEventsPage(friendName: friend['name']),
+                          builder: (context) => FriendEventsPage(
+                            friendName: friend['name'],
+                            events: friend['events'],
+                          ),
                         ),
                       );
                     },
@@ -174,24 +185,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
-        selectedItemColor: Color(0xFF6A1B9A),
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.event), label: 'My Events'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.card_giftcard), label: 'My Gifts'),
-        ],
-        onTap: (index) {
-          if (index == 1) {
-            Navigator.pushNamed(context, '/myEvents');
-          } else if (index == 2) {
-            Navigator.pushNamed(context, '/myGifts');
-          }
-        },
       ),
     );
   }
@@ -237,6 +230,7 @@ class _HomePageState extends State<HomePage> {
                     'name': friendName,
                     'image': friendImageUrl,
                     'upcomingEvents': 0,
+                    'events': [],
                   });
                 });
                 Navigator.pop(context);

@@ -3,14 +3,9 @@ import 'event_gifts_page.dart';
 
 class FriendEventsPage extends StatelessWidget {
   final String friendName;
+  final List<Map<String, dynamic>> events;
 
-  FriendEventsPage({required this.friendName});
-
-  final List<String> events = [
-    'Birthday Party',
-    'Wedding Anniversary',
-    // Add more events as needed
-  ];
+  FriendEventsPage({required this.friendName, required this.events});
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +42,7 @@ class FriendEventsPage extends StatelessWidget {
                 contentPadding:
                     const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                 title: Text(
-                  event,
+                  event['name'],
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -60,7 +55,10 @@ class FriendEventsPage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => EventGiftsPage(eventName: event),
+                      builder: (context) => EventGiftsPage(
+                        eventName: event['name'],
+                        gifts: event['gifts'],
+                      ),
                     ),
                   );
                 },

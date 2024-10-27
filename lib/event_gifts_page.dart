@@ -1,24 +1,30 @@
-// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors
-
 import 'package:flutter/material.dart';
 
-class EventGiftsPage extends StatelessWidget {
+class EventGiftsPage extends StatefulWidget {
   final String eventName;
+  final List<String> gifts;
 
-  EventGiftsPage({required this.eventName});
+  EventGiftsPage({required this.eventName, required this.gifts});
 
-  final List<String> gifts = [
-    'Laptop',
-    'Smartphone',
-    // Add more gifts as needed
-  ];
+  @override
+  _EventGiftsPageState createState() => _EventGiftsPageState();
+}
+
+class _EventGiftsPageState extends State<EventGiftsPage> {
+  late List<bool> isPledged;
+
+  @override
+  void initState() {
+    super.initState();
+    isPledged = List.filled(widget.gifts.length, false);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "$eventName Gifts",
+          "${widget.eventName} Gifts",
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
@@ -35,9 +41,11 @@ class EventGiftsPage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListView.builder(
-          itemCount: gifts.length,
+          itemCount: widget.gifts.length,
           itemBuilder: (context, index) {
-            final gift = gifts[index];
+            final gift = widget.gifts[index];
+            final pledged = isPledged[index];
+
             return Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15),
@@ -47,33 +55,40 @@ class EventGiftsPage extends StatelessWidget {
               child: ListTile(
                 contentPadding:
                     const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                leading: Icon(Icons.card_giftcard,
-                    color: Colors.purple[700], size: 30),
+                leading: Icon(
+                  pledged ? Icons.check_circle : Icons.card_giftcard,
+                  color: pledged ? Colors.green : Colors.purple[700],
+                  size: 30,
+                ),
                 title: Text(
                   gift,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.purple[900],
+                    color: pledged ? Colors.green : Colors.purple[900],
+                    decoration: pledged
+                        ? TextDecoration.lineThrough
+                        : TextDecoration.none,
                   ),
                 ),
-                trailing:
-                    Icon(Icons.arrow_forward_ios, color: Colors.purple[700]),
+                trailing: pledged
+                    ? Text(
+                        "Pledged",
+                        style: TextStyle(
+                          color: Colors.green,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    : Icon(Icons.arrow_forward_ios, color: Colors.purple[700]),
                 onTap: () {
-                  // Future functionality to view gift details
+                  setState(() {
+                    isPledged[index] = !isPledged[index];
+                  });
                 },
               ),
             );
           },
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Add gift functionality for the logged-in user
-        },
-        backgroundColor: Color(0xFF8E24AA),
-        tooltip: 'Add a Gift',
-        child: Icon(Icons.add, color: Colors.white),
       ),
     );
   }
